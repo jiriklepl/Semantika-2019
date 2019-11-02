@@ -6,10 +6,12 @@
 @post rv <-> exists j. (0 <= j && j < |a| && a[j] = 0)
 bool containsZero(int[] a) {
 	for
-		@ 0 <= i && forall j. (j < i && 0 <= j -> a[j] != 0)
+		@ 0 <= i && i <= |a| &&
+			forall j. (j < i && 0 <= j -> a[j] != 0)
 		(int i := 0; i < |a|; i := i + 1) {
 		if (a[i] = 0)
 			return true;
 	}
+
 	return false;
 }
