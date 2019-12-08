@@ -1,21 +1,67 @@
-@pre  true
-@post true     
-      
+@pre |a| >= 1
+	&& l <= u
+	&& 0 <= l
+	&& u < |a|
+@post |rv| = |a|
+	&& forall j. (
+		(  j > l
+		&& j <= u) -> rv[l] <= rv[j])
+	&& forall j. (
+		(  j >= l
+		&& j <= u) -> rv[l] <= a[j])
+	&& forall j. (
+		(  j >= 0
+		&& j < l) -> a[j] = rv[j])
+	&& forall j. (
+		(  j > l
+		&& j <= u) -> rv[j] >= a[j])
+	&& exists j. (
+		j >= l
+		&& j <= u
+		&& a[j] = rv[l])
 int[] swapMin(int[] a, int l, int u) {
 	int min;
+	
 	int[] array := a;
-	
+	@ |a| = |array|;
+
 	min := array[l];
-	
-	for @  true
-	(int i := l + 1; i <= u; i := i + 1) {
+
+	for
+		@ i >= l + 1
+			&& i <= u + 1
+			&& l <= u
+			&& 0 <= l
+			&& u < |a|
+			&& |array| = |a|
+			&& partitioned(array, l, l, l + 1, i - 1)
+			&& min = array[l]
+			&& forall j. (
+				(  j >= 0
+				&& j < l) -> a[j] = array[j])
+			&& forall j. (
+				(  j >= i
+				&& j <= u) -> a[j] = array[j])
+			&& forall j. (
+				(  j > l
+				&& j < i) -> array[j] >= a[j])
+			&& forall j. (
+				(  j >= l
+				&& j < i) -> array[l] <= a[j])
+			&& exists j. (
+				j >= l
+				&& j <= u
+				&& a[j] = array[l])
+		# (u - i + 1)
+		(int i := l + 1; i <= u; i := i + 1
+	) {
 		if (array[i] < min) {
 		  min := array[i];
 		  array[i] := array[l];
 		  array[l] := min;
 		}
 	}
-	
+
 	return array;
 }
 
@@ -27,8 +73,15 @@ int[] selectSort(int[] a) {
 	
 	int[] array := a;
 	
-	for @ true
-	(int i := 0; i < |array| ; i := i + 1) {
+	for
+		@ i >= 0
+			&& i <= |array|
+			&& |array| = |a|
+			&& sorted(array, 0, i - 1)
+			&& partitioned(array, 0, i - 1, i, |array|-1)
+		# (|array| - i)
+		(int i := 0; i < |array| ; i := i + 1
+	) {
 		array := swapMin(array, i, |array| - 1);
 	}
 	
